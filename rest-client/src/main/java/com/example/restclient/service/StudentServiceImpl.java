@@ -1,13 +1,13 @@
 package com.example.restclient.service;
 
-import com.example.grpcproto.v1.RegisterStudentRequest;
-import com.example.grpcproto.v1.StudentRequest;
-import com.example.grpcproto.v1.StudentResponse;
-import com.example.grpcproto.v1.StudentServiceGrpc;
+import com.example.grpcproto.v1.*;
 import com.example.restclient.dto.StudentDto;
 import io.grpc.ManagedChannel;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @Service
@@ -47,6 +47,17 @@ public class StudentServiceImpl implements StudentService {
                 StudentRequest.newBuilder()
                         .setStudentId(studentId)
                         .build()));
+    }
+
+    @Override
+    public List<StudentDto> allStudent() {
+
+        EmptyRequest request = EmptyRequest.newBuilder().build();
+        AllStudentResponse response = blockingStub.getAllStudent(request);
+
+        List<StudentDto> studentDtoList = new ArrayList<>();
+        response.getStudentResponseListList().forEach(studentResponse -> studentDtoList.add(convertProtobufToDto(studentResponse)));
+        return studentDtoList;
     }
 
     private StudentDto convertProtobufToDto(StudentResponse response) {

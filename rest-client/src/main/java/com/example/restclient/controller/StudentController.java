@@ -5,6 +5,8 @@ import com.example.restclient.service.StudentService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
 public class StudentController {
@@ -29,6 +31,11 @@ public class StudentController {
     @DeleteMapping("/api/student/{studentId}")
     public StudentDto deleteStudent(@PathVariable String studentId) {
         return studentService.deleteStudent(studentId);
+    }
+
+    @GetMapping("/api/students")
+    public List<StudentDto> allStudent() {
+        return studentService.allStudent();
     }
 
 

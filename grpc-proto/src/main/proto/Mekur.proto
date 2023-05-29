@@ -24,8 +24,15 @@ message RegisterStudentRequest {
   double cgpa = 5;
 }
 
+message AllStudentResponse {
+  repeated StudentResponse studentResponseList = 1;
+}
+
+message EmptyRequest {}
+
 service StudentService {
   rpc getStudentById(StudentRequest) returns(StudentResponse) {};
   rpc registerStudent(RegisterStudentRequest) returns(StudentResponse) {};
   rpc deleteStudentById(StudentRequest) returns(StudentResponse) {};
+  rpc getAllStudent(EmptyRequest) returns(AllStudentResponse) {};
 }

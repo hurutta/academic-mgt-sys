@@ -1,15 +1,15 @@
 package com.example.grpcserver.service;
 
-import com.example.grpcproto.v1.RegisterStudentRequest;
-import com.example.grpcproto.v1.StudentRequest;
-import com.example.grpcproto.v1.StudentResponse;
-import com.example.grpcproto.v1.StudentServiceGrpc;
+import com.example.grpcproto.v1.*;
 import com.example.grpcserver.model.Student;
 import com.example.grpcserver.repository.StudentRepository;
 import io.grpc.stub.StreamObserver;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @AllArgsConstructor
@@ -53,6 +53,21 @@ public class StudentGrpcServiceImpl extends StudentServiceGrpc.StudentServiceImp
 
         Student student = studentRepository.deleteStudentByStudentId(request.getStudentId());
         StudentResponse response = getStudentResponse(student);
+
+        log.info("StudentGrpcServiceImpl:: registerStudent:: response:: {}", response);
+
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void getAllStudent(EmptyRequest request, StreamObserver<AllStudentResponse> responseObserver) {
+        List<Student> students = studentRepository.findAll();
+        List<StudentResponse> studentResponseList = new ArrayList<>();
+        students.forEach(student -> {
+            studentResponseList.add(getStudentResponse(student));
+        });
+        AllStudentResponse response = AllStudentResponse.newBuilder().addAllStudentResponseList(studentResponseList).build();
 
         log.info("StudentGrpcServiceImpl:: registerStudent:: response:: {}", response);
 
