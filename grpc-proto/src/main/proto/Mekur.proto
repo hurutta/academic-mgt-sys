@@ -10,9 +10,22 @@ message StudentRequest {
 
 message StudentResponse {
   string studentId = 1;
-  string studentName = 2;
+  string name = 2;
+  int32 semester = 3;
+  string dept = 4;
+  double cgpa = 5;
+}
+
+message RegisterStudentRequest {
+  string studentId = 1;
+  string name = 2;
+  int32 semester = 3;
+  string dept = 4;
+  double cgpa = 5;
 }
 
 service StudentService {
   rpc getStudentById(StudentRequest) returns(StudentResponse) {};
+  rpc registerStudent(RegisterStudentRequest) returns(StudentResponse) {};
+  rpc deleteStudentById(StudentRequest) returns(StudentResponse) {};
 }
