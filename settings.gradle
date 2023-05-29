@@ -1,0 +1,3 @@
+rootProject.name = 'mekur'
+
+include 'rest-client', 'grpc-server', 'grpc-proto'

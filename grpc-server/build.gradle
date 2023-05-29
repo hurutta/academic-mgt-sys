@@ -1,0 +1,53 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.7.12'
+    id 'io.spring.dependency-management' version '1.1.0'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+
+    implementation project(':grpc-proto')
+    // https://mvnrepository.com/artifact/io.grpc/grpc-protobuf
+    //implementation group: 'io.grpc', name: 'grpc-protobuf', version: '1.54.0'
+
+    // https://mvnrepository.com/artifact/io.grpc/grpc-stub
+    //implementation group: 'io.grpc', name: 'grpc-stub', version: '1.54.0'
+
+// https://mvnrepository.com/artifact/net.devh/grpc-server-spring-boot-starter
+    implementation 'net.devh:grpc-server-spring-boot-starter:2.14.0.RELEASE'
+
+
+
+    // https://mvnrepository.com/artifact/io.grpc/grpc-netty-shaded
+    implementation group: 'io.grpc', name: 'grpc-netty-shaded', version: '1.36.0'
+
+// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-mongodb
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb'
+
+
+
+
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
