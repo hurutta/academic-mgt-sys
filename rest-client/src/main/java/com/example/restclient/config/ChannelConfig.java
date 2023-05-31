@@ -12,7 +12,7 @@ public class ChannelConfig {
     @Bean
     public ManagedChannel getChannel() {
         return ManagedChannelBuilder
-                .forAddress("localhost", 9090)
+                .forAddress("localhost", 50051)
                 .usePlaintext()
                 .build();
     }
