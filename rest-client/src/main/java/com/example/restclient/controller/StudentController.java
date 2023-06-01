@@ -1,5 +1,6 @@
 package com.example.restclient.controller;
 
+import com.example.restclient.dto.AnalysisDto;
 import com.example.restclient.dto.StudentDto;
 import com.example.restclient.service.StudentService;
 import lombok.AllArgsConstructor;
@@ -36,6 +37,11 @@ public class StudentController {
     @GetMapping("/api/students")
     public List<StudentDto> allStudent() {
         return studentService.allStudent();
+    }
+
+    @GetMapping("/api/analysis")
+    public AnalysisDto getAnalysis() {
+        return studentService.getAnalysis();
     }
 
 

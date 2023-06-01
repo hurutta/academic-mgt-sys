@@ -1,20 +1,29 @@
 package com.example.restclient.service;
 
 import com.example.grpcproto.v1.*;
+import com.example.restclient.dto.AnalysisDto;
 import com.example.restclient.dto.StudentDto;
-import io.grpc.ManagedChannel;
-import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
+
+@Slf4j
 @Service
 public class StudentServiceImpl implements StudentService {
 
-    private StudentServiceGrpc.StudentServiceBlockingStub blockingStub;
-    private ManagedChannel channel;
+    private final StudentServiceGrpc.StudentServiceBlockingStub javaServerBlockingStub;
+    private final StudentServiceGrpc.StudentServiceBlockingStub pythonServerBlockingStub;
+
+    public StudentServiceImpl(@Qualifier("name=javaStub") StudentServiceGrpc.StudentServiceBlockingStub javaServerBlockingStub,
+                              @Qualifier("name=pythonStub") StudentServiceGrpc.StudentServiceBlockingStub pythonServerBlockingStub) {
+
+        this.javaServerBlockingStub = javaServerBlockingStub;
+        this.pythonServerBlockingStub = pythonServerBlockingStub;
+    }
 
     @Override
     public StudentDto registerStudent(StudentDto studentDto) {
@@ -27,7 +36,7 @@ public class StudentServiceImpl implements StudentService {
                 .setCgpa(studentDto.getCgpa())
                 .build();
 
-        StudentResponse response = blockingStub.registerStudent(request);
+        StudentResponse response = javaServerBlockingStub.registerStudent(request);
         return convertProtobufToDto(response);
     }
 
@@ -36,14 +45,14 @@ public class StudentServiceImpl implements StudentService {
 
         StudentRequest request = StudentRequest.newBuilder().setStudentId(studentId).build();
 
-        StudentResponse response = blockingStub.getStudentById(request);
+        StudentResponse response = javaServerBlockingStub.getStudentById(request);
         return convertProtobufToDto(response);
     }
 
     @Override
     public StudentDto deleteStudent(String studentId) {
 
-        return convertProtobufToDto(blockingStub.deleteStudentById(
+        return convertProtobufToDto(javaServerBlockingStub.deleteStudentById(
                 StudentRequest.newBuilder()
                         .setStudentId(studentId)
                         .build()));
@@ -53,7 +62,7 @@ public class StudentServiceImpl implements StudentService {
     public List<StudentDto> allStudent() {
 
         EmptyRequest request = EmptyRequest.newBuilder().build();
-        AllStudentResponse response = blockingStub.getAllStudent(request);
+        AllStudentResponse response = javaServerBlockingStub.getAllStudent(request);
 
         List<StudentDto> studentDtoList = new ArrayList<>();
         response.getStudentResponseListList().forEach(studentResponse -> studentDtoList.add(convertProtobufToDto(studentResponse)));
@@ -70,8 +79,20 @@ public class StudentServiceImpl implements StudentService {
                 .build();
     }
 
+
+    @Override
+    public AnalysisDto getAnalysis() {
+        StudentRequest request = StudentRequest.newBuilder().setStudentId("223").build();
+
+        StudentResponse response = pythonServerBlockingStub.getStudentById(request);
+        log.info(":::: {}", convertProtobufToDto(response));
+        return null;
+    }
+
+
     private void shutDownChannel() {
-        channel.shutdown();
+//        javaChannel.shutdown();
+//        pythonChannel.shutdown();
     }
 
 }
